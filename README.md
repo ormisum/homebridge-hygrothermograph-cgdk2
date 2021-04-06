@@ -1,4 +1,4 @@
-# homebridge-mi-hygrothermograph
+# homebridge-hygrothermograph-cgdk2
 [![verified-by-homebridge](https://badgen.net/badge/homebridge/verified/purple)](https://github.com/homebridge/homebridge/wiki/Verified-Plugins)
 [![npm](https://img.shields.io/npm/v/homebridge-mi-hygrothermograph.svg)](https://www.npmjs.com/package/homebridge-mi-hygrothermograph) [![npm](https://img.shields.io/npm/dt/homebridge-mi-hygrothermograph.svg)](https://www.npmjs.com/package/homebridge-mi-hygrothermograph) [![Travis](https://img.shields.io/travis/hannseman/homebridge-mi-hygrothermograph/master.svg)](https://travis-ci.com/hannseman/homebridge-mi-hygrothermograph) [![Coveralls github](https://img.shields.io/coveralls/github/hannseman/homebridge-mi-hygrothermograph/master.svg)](https://coveralls.io/github/hannseman/homebridge-mi-hygrothermograph?branch=master)
 
@@ -6,12 +6,9 @@
 
 Supported sensors:
 
-* [Xiaomi Mi Bluetooth Temperature and Humidity Sensor / LYWSD02](https://www.xiaomistore.pk/mi-bluetooth-temperature-humidity-monitor.html) shown below.
-* The [E-Ink sensor / CGG1](https://cleargrass.com/cg_temp_rh_monitor/overview)
-* [E-Ink clock / LYWSD02MMC](https://item.mi.com/product/9542.html).
-* The [Hygrothermograph 2 / LYWSD03MMC](https://in.c.mi.com/forum.php?mod=viewthread&tid=2047050) is supported but have encryption enabled. See the [Encryption](#encryption) for more details.
+* [CGDK2](https://www.aliexpress.com/item/1005002175838299.html)
 
-![alt text](images/hygrothermograph.png "Xiaomi Mi Bluetooth Temperature and Humidity Sensor")
+![alt text](images/hygrothermograph.png "Qingping Lite E Thermometer Hygrometer Temperature & Humidity Sensor")
 
 ## Installation
 Make sure your system matches the prerequisites. You need to have a C compiler and [Node.js](https://nodejs.org/) newer or equal to version 10.0.0 installed.
