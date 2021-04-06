@@ -1,8 +1,9 @@
 # homebridge-hygrothermograph-cgdk2
-[![verified-by-homebridge](https://badgen.net/badge/homebridge/verified/purple)](https://github.com/homebridge/homebridge/wiki/Verified-Plugins)
-[![npm](https://img.shields.io/npm/v/homebridge-mi-hygrothermograph.svg)](https://www.npmjs.com/package/homebridge-mi-hygrothermograph) [![npm](https://img.shields.io/npm/dt/homebridge-mi-hygrothermograph.svg)](https://www.npmjs.com/package/homebridge-mi-hygrothermograph) [![Travis](https://img.shields.io/travis/hannseman/homebridge-mi-hygrothermograph/master.svg)](https://travis-ci.com/hannseman/homebridge-mi-hygrothermograph) [![Coveralls github](https://img.shields.io/coveralls/github/hannseman/homebridge-mi-hygrothermograph/master.svg)](https://coveralls.io/github/hannseman/homebridge-mi-hygrothermograph?branch=master)
+This is a modified fork of [homebridge-mi-hygrothermograph](https://github.com/hannseman/homebridge-mi-hygrothermograph) for the CGDK2 temperature sensor.
+<!-- [![verified-by-homebridge](https://badgen.net/badge/homebridge/verified/purple)](https://github.com/homebridge/homebridge/wiki/Verified-Plugins)
+[![npm](https://img.shields.io/npm/v/homebridge-mi-hygrothermograph.svg)](https://www.npmjs.com/package/homebridge-mi-hygrothermograph) [![npm](https://img.shields.io/npm/dt/homebridge-mi-hygrothermograph.svg)](https://www.npmjs.com/package/homebridge-mi-hygrothermograph) [![Travis](https://img.shields.io/travis/hannseman/homebridge-mi-hygrothermograph/master.svg)](https://travis-ci.com/hannseman/homebridge-mi-hygrothermograph) [![Coveralls github](https://img.shields.io/coveralls/github/hannseman/homebridge-mi-hygrothermograph/master.svg)](https://coveralls.io/github/hannseman/homebridge-mi-hygrothermograph?branch=master) -->
 
-[Homebridge](https://github.com/nfarina/homebridge) plugin for exposing measured temperature and humidity from Xiaomi sensors as [HomeKit](https://www.apple.com/ios/home/) accessories.
+[Homebridge](https://github.com/nfarina/homebridge) plugin for exposing measured temperature and humidity as [HomeKit](https://www.apple.com/ios/home/) accessories.
 
 Supported sensors:
 
@@ -26,7 +27,7 @@ For more detailed information and descriptions for other platforms please see th
 ### Install homebridge and this plugin
 ```
 [sudo] npm install -g --unsafe-perm homebridge
-[sudo] npm install -g --unsafe-perm homebridge-mi-hygrothermograph
+[sudo] npm install -g --unsafe-perm homebridge-hygrothermograph-cgdk2
 ```
 
 **Note:** depending on your platform you might need to run `npm install -g`  with root privileges.
@@ -74,7 +75,6 @@ Update your Homebridge `config.json` file. See [config-sample.json](config-sampl
 | `disableBatteryLevel`   | `false`         | If battery level should not be exposed to Homekit. New E-Ink sensors do currently not support sending battery levels and setting this to `true` will make Elgato Eve not warn about it.                     |
 | `temperatureOffset`     | `0`             | An offset to apply to temperature values for calibration if measured values are incorrect.                                                                                                                  |
 | `humidityOffset`        | `0`             | An offset to apply to humidity values for calibration if measured values are incorrect.                                                                                                                     |
-| `bindKey`               |                 | A key which is used to decrypt data sent by sensors with encryption.                                                                                                                     |
 
 
 ### Multiple sensors
@@ -216,46 +216,13 @@ For more options see the [MQTT.js documentation](https://github.com/mqttjs/MQTT.
 Everything set in `mqtt` will be passed to the `options` argument on `Client`.
 The `Client#publish` options `qos` and `retain` can also be configured the same way.
 
-## Encryption
-
-Some Xiaomi sensors have encrypted data. For example [LYWSD03MMC](https://in.c.mi.com/forum.php?mod=viewthread&tid=2047050).
-To be able to read the data from this sensor one needs to get a hold of the encryption key.
-For ways to get this key please read [this FAQ entry](https://github.com/custom-components/sensor.mitemp_bt/blob/master/faq.md#my-sensors-ble-advertisements-are-encrypted-how-can-i-get-the-key)
-from the [custom-components/sensor.mitemp_bt](https://github.com/custom-components/sensor.mitemp_bt/) repository. When found it can be set with the `bindKey` option.
-
-Thanks [ulrich-berl](https://github.com/ulrich-berl) for implementing support for this.
-
 
 ## Technical details
 The plugin scans for [Bluetooth Low Energy](https://en.wikipedia.org/wiki/Bluetooth_Low_Energy) peripherals and check the broadcast advertisement packets.
 By only reading the advertisement packet there is no need to establish a connection to the peripheral.
 Inside each packet discovered we look for Service Data with a UUID of `0xfe95`. If found we start trying to parse the actual Service Data to find the temperature and humidity.
 
-By using a [Bluetooth LE Sniffer](https://www.adafruit.com/product/2269) it is possible to see that the peripheral advertises 3 different sized Service Data:
-1. `50:20:aa:01:be:64:ae:d0:a8:65:4c:0d:10:04:cc:00:8a:01`
-2. `50:20:aa:01:ba:64:ae:d0:a8:65:4c:06:10:02:84:01`
-3. `50:20:aa:01:c0:64:ae:d0:a8:65:4c:0a:10:01:5d`
-
-Some bytes stay the same and some bytes change over time. By placing the peripheral in different temperated places it could be established that the last bytes contain the sensor data.
-
-These were the observations:
-
-* In the first example the last two bytes `8a:01` contains the humidity data. `8a:01` as an little endian 16-bit integer is equal to `394` as in 39.4 % relative humidity. If we check the next two bytes `cc:00` they equal to `204` as in 20.4 celsius.
-* In the second example `84:01` equals to `388` as in 38.8 % relative humidity. No temperature could be found in this data, more on that later.
-* In the shortest and third example `5d` equals to `93` and this very much looks like the charge level on the battery in percent.
-* If we start looking at the other bytes in order the next one looks like a length indicator for the following bytes with `04`, `02` and `01` as values.
-* The following two bytes almost always stays the same for each sized packet except for the 16 bytes sized data here they alterate between `06:10` and `04:10`.
-After some investigation it is established that these bytes indicate what type of sensor data that will follow. `06:10` will have humidity data and `04:10` will have temperature data.
-`0d:10` indicate that both humidity and temperature data will follow and `0a:10` that battery data is to be expected.
-
-So we actually have 4 different packets that contains the sensor data:
-
-1. `50:20:aa:01:be:64:ae:d0:a8:65:4c:0d:10:04:cc:00:8a:01`
-2. `50:20:aa:01:ba:64:ae:d0:a8:65:4c:06:10:02:84:01`
-3. `50:20:aa:01:bf:65:ae:d0:a8:65:4c:04:10:02:cc:00`
-4. `50:20:aa:01:c0:64:ae:d0:a8:65:4c:0a:10:01:5d`
-
-After some investigation and thanks to [node-xiaomi-gap-parser](https://github.com/LynxyssCZ/node-xiaomi-gap-parser) it is probable that the data of `50:20:aa:01:be:64:ae:d0:a8:65:4c:0d:10:04:cc:00:8a:01` represents the following:
+`50:20:aa:01:be:64:ae:d0:a8:65:4c:0d:10:04:cc:00:8a:01` represents the following:
 
 | byte  | function      | type      |
 |:-----:|---------------|-----------|
@@ -282,6 +249,6 @@ Some hardware combinations are problematic and may cause weird troubles like sen
 
 ## Legal
 
-*Xiaomi* and *Mi* are registered trademarks of BEIJING XIAOMI TECHNOLOGY CO., LTD.
+*Qingping* is a registered trademarks of Qingping Technology (Beijing) Co., Ltd.
 
-This project is in no way affiliated with, authorized, maintained, sponsored or endorsed by *Xiaomi* or any of its affiliates or subsidiaries.
+This project is in no way affiliated with, authorized, maintained, sponsored or endorsed by *Qingping* or any of its affiliates or subsidiaries.
