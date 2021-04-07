@@ -1,5 +1,5 @@
 # homebridge-hygrothermograph-cgdk2
-This is a modified fork of [homebridge-mi-hygrothermograph](https://github.com/hannseman/homebridge-mi-hygrothermograph) for the CGDK2 temperature sensor.
+This is a modified fork of [homebridge-mi-hygrothermograph](https://github.com/hannseman/homebridge-mi-hygrothermograph) for the Qingping Temp & RH Lite (CGDK2) temperature sensor.
 <!-- [![verified-by-homebridge](https://badgen.net/badge/homebridge/verified/purple)](https://github.com/homebridge/homebridge/wiki/Verified-Plugins)
 [![npm](https://img.shields.io/npm/v/homebridge-mi-hygrothermograph.svg)](https://www.npmjs.com/package/homebridge-mi-hygrothermograph) [![npm](https://img.shields.io/npm/dt/homebridge-mi-hygrothermograph.svg)](https://www.npmjs.com/package/homebridge-mi-hygrothermograph) [![Travis](https://img.shields.io/travis/hannseman/homebridge-mi-hygrothermograph/master.svg)](https://travis-ci.com/hannseman/homebridge-mi-hygrothermograph) [![Coveralls github](https://img.shields.io/coveralls/github/hannseman/homebridge-mi-hygrothermograph/master.svg)](https://coveralls.io/github/hannseman/homebridge-mi-hygrothermograph?branch=master) -->
 
@@ -7,7 +7,7 @@ This is a modified fork of [homebridge-mi-hygrothermograph](https://github.com/h
 
 Supported sensors:
 
-* [CGDK2](https://www.aliexpress.com/item/1005002175838299.html)
+* [Qingping Temp & RH Lite (CGDK2)](https://www.aliexpress.com/item/1005002175838299.html)
 
 ![alt text](images/hygrothermograph.png "Qingping Lite E Thermometer Hygrometer Temperature & Humidity Sensor")
 
@@ -51,7 +51,7 @@ Update your Homebridge `config.json` file. See [config-sample.json](config-sampl
 ```json
 "accessories": [
     {
-      "accessory": "Hygrotermograph",
+      "accessory": "HygrothermographCgdk2",
       "name": "Temperature & Humidity"
     }
 ]
@@ -59,7 +59,7 @@ Update your Homebridge `config.json` file. See [config-sample.json](config-sampl
 
 | Key                     | Default         | Description                                                                                                                                                                                                 |
 |-------------------------|-----------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `accessory`             |                 | Mandatory. The name provided to Homebridge. Must be "Hygrotermograph".                                                                                                                                      |
+| `accessory`             |                 | Mandatory. The name provided to Homebridge. Must be "HygrothermographCgdk2".                                                                                                                                      |
 | `name`                  |                 | Mandatory. The name of this accessory. This will appear in your Home-app.                                                                                                                                   |
 | `address`               |                 | Optional. The address of the device. Used when running multiple devices.                                                                                                                                    |
 | `timeout`               | `15`            | Time in minutes after last contact when the accessory should be regarded as unreachable. If set to `0`, timeout will be disabled.                                                                           |
@@ -78,8 +78,8 @@ Update your Homebridge `config.json` file. See [config-sample.json](config-sampl
 
 
 ### Multiple sensors
-When running just one Hygrotermograph accessory there is no need to specify the address of the BLE device.
-But if you want to run multiple Hygrotermograph accessories you need to specify the BLE address for each of them.
+When running just one HygrothermographCgdk2 accessory there is no need to specify the address of the BLE device.
+But if you want to run multiple HygrothermographCgdk2 accessories you need to specify the BLE address for each of them.
 If the address is not specified they will interfere with each other.
 
 The easiest way to find the address of the device is to use `[sudo] hcitool lescan`.
@@ -91,12 +91,12 @@ Update your Homebridge `config.json` and specify the `address` key:
 ```json
 "accessories": [
     {
-      "accessory": "Hygrotermograph",
+      "accessory": "HygrothermographCgdk2",
       "name": "Room 1",
       "address": "4c:64:a8:d0:ae:65"
     },
     {
-      "accessory": "Hygrotermograph",
+      "accessory": "HygrothermographCgdk2",
       "name": "Room 2",
       "address": "2c:34:b3:d4:a1:61"
     }
@@ -122,7 +122,7 @@ The default timeout is 15 minutes but can be changed by specifying the number of
 ```json
 "accessories": [
     {
-      "accessory": "Hygrotermograph",
+      "accessory": "HygrothermographCgdk2",
       "name": "Temperature & Humidity",
       "timeout": 30
     }
