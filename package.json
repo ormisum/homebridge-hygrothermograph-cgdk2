@@ -1,19 +1,20 @@
 {
   "name": "homebridge-hygrothermograph-cgdk2",
   "version": "3.0.4",
-  "description": "Homebridge plugin for Qingping Technology CGDK2 Qingping Temp & RH Monitor Lite",
+  "description": "Homebridge plugin for Qingping CGDK2 Temp & RH Monitor Lite",
   "main": "index.js",
   "scripts": {
     "test": "nyc mocha",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "lint": "eslint ."
   },
-  "author": "Ormisum Aaron",
+  "contributors": ["Hannes Ljungberg","Ormisum Aaron"],
   "license": "MIT",
   "keywords": [
     "homebridge-plugin",
     "homekit",
-    "xiaomi",
+    "Qingping",
+    "CGDK2",
     "temperature",
     "humidity",
     "bluetooth"
@@ -31,7 +32,6 @@
     "config-sample.json",
     "config.schema.json",
     "lib/",
-    "test/"
   ],
   "engines": {
     "homebridge": ">=0.4.0",
